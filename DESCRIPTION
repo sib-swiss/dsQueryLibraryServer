@@ -1,0 +1,22 @@
+Package: dsQueryLibrary
+Type: Package
+Title: OMOP query Library
+Version: 1.0.0
+Authors@R: 
+    c(person(given = "Iulian",
+             family = "Dragan",
+             role = c("aut", "cre"),
+             email = "iulian.dragan@sib.swiss"))
+Description: Implements a no frills version of https://github.com/OHDSI/QueryLibrary on remote datashield/opal servers. 
+License: LGPL (>= 2.1)
+LazyData: true
+AggregateMethods:
+    loadAllQueries,
+    execQuery
+Depends:
+    resourcex,
+    dsSwissKnife,
+Suggests: 
+    DBI,
+    RPostgres
+Encoding: UTF-8
