@@ -1,4 +1,4 @@
 .init <- function(){
   .queryLibrary <<- new.env(parent=.GlobalEnv)
-  assign(allQueries, loadAllQueries(), envir = .queryLibrary)
+  assign('allQueries', loadAllQueries(), envir = .queryLibrary)
 }
