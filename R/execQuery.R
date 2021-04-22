@@ -1,8 +1,10 @@
 execQuery <- function(qDomain, qName, qInput, resource){
   allq <- get('allQueries', envir = .queryLibrary)
-  myQuery <- allq[[qDomain]][[qName]]
+  myQuery <- force(allq[[qDomain]][[qName]]$Query)
   warning('HERE')
-  warning(str(allq))
+  warning(myQuery)
+  warning(qDomain)
+  warning(qName)
   warning('STOP')
   qInput <- dsSwissKnife:::.decode.arg(qInput)
   for (inp in names(qInput)){
