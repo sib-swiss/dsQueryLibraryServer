@@ -2,9 +2,11 @@ loadAllQueries <- function(){
   if(exists('.allQueries', envir = parent.frame())){
     return(.allQueries)
   }
-  ret <- sapply( dir('inst/QueryLibrary/', no..=TRUE), function(domain){
-    unlist(lapply(list.files(paste0('inst/QueryLibrary/', domain), recursive = TRUE, no..=TRUE), function(x){
-        fl <- paste0('inst/QueryLibrary/', domain,'/', x)
+  ql <- system.file('QueryLibrary', package = 'dsQueryLibraryServer')
+ ql <- paste0(ql, '/')
+  ret <- sapply( dir(ql, no..=TRUE), function(domain){
+    unlist(lapply(list.files(paste0(ql, domain), recursive = TRUE, no..=TRUE), function(x){
+        fl <- paste0(ql, domain,'/', x)
         ret <-parseMd(fl)
         n <- ret$Name
         ret$Name <- NULL
