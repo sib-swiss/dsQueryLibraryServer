@@ -1,8 +1,8 @@
 execQuery <- function(qDomain, qName, qInput, resource){
   allq <- get('allQueries', envir = .queryLibrary)
-  myQuery <- force(allq[[qDomain]][[qName]]$Query)
+  myQuery <- force(allq[[qDomain]][[qName]])
   warning('HERE')
-  warning(myQuery)
+  warning(str(myQuery))
   warning(qDomain)
   warning(qName)
   warning('STOP')
