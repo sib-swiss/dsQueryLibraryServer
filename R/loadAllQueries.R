@@ -1,6 +1,6 @@
 loadAllQueries <- function(){
-  if(exists('.allQueries', envir = parent.frame())){
-    return(.allQueries)
+  if(exists('allQueries', envir = parent.frame())){
+    return(allQueries)
   }
   ql <- system.file('QueryLibrary', package = 'dsQueryLibraryServer')
  ql <- paste0(ql, '/')
@@ -15,6 +15,6 @@ loadAllQueries <- function(){
         out
     }), recursive = FALSE)
   })
-  assign('.allQueries', ret, envir = parent.frame())
+  assign('allQueries', ret, envir = parent.frame())
   ret
 }
