@@ -6,5 +6,5 @@ execQuery <- function(qDomain, qName, qInput, resource){
     patt <- paste0('$', inp)
     myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
   }
-  resourcex::loadQuery(get(resource, envir = parent.frane), myQuery)
+  resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery)
 }
