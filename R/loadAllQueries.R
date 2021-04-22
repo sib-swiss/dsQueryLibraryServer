@@ -1,6 +1,6 @@
 loadAllQueries <- function(){
   if(exists('allQueries', envir = .queryLibrary)){
-    return(allQueries)
+    return(get('allQueries', envir = .queryLibrary))
   }
   ql <- system.file('QueryLibrary', package = 'dsQueryLibraryServer')
  ql <- paste0(ql, '/')
