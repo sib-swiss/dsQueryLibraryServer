@@ -1,5 +1,6 @@
 execQuery <- function(qDomain, qName, qInput, resource){
-  myQuery <- .allQueries[[qDomain]][[qName]]
+  allq <- get('.allQueries', envir = parent.frame())
+  myQuery <- allq[[qDomain]][[qName]]
   qInput <- dsSwissKnife::.decode.arg(qInput)
   for (inp in names(qInput)){
     patt <- paste0('$', inp)
