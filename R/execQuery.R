@@ -6,7 +6,11 @@ execQuery <- function(qDomain, qName, qInput, resource){
   warning(qDomain)
   warning(qName)
   warning('STOP')
+  
   qInput <- dsSwissKnife:::.decode.arg(qInput)
+
+# must be set via option:
+  myQuery <- gsub('@cdm', getOption('cdm_schema'), myQuery, fixed = TRUE)
   for (inp in names(qInput)){
     patt <- paste0('$', inp)
     myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
