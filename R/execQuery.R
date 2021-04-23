@@ -1,12 +1,7 @@
 execQuery <- function(qDomain, qName, qInput, resource){
   allq <- get('allQueries', envir = .queryLibrary)
   myQuery <- allq[[qDomain]][[qName]]$Query
-  warning('HERE')
-  warning(str(allq))
-  warning(qDomain)
-  warning(qName)
-  warning('STOP')
-  
+
   qInput <- dsSwissKnife:::.decode.arg(qInput)
 
 # must be set via option:
@@ -15,5 +10,8 @@ execQuery <- function(qDomain, qName, qInput, resource){
     patt <- paste0('$', inp)
     myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
   }
-  resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery)
+  warning(myQuery)
+  x <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery)
+  warning(x)
+  x
 }
