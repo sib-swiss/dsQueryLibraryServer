@@ -6,9 +6,10 @@ execQuery <- function(qDomain, qName, qInput, resource){
 
 # must be set via option:
   myQuery <- gsub('@cdm', getOption('cdm_schema'), myQuery, fixed = TRUE)
-  for (inp in names(qInput)){
-    patt <- paste0('$', inp)
-    myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
-  }
-  resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery)
+#  for (inp in names(qInput)){
+#    patt <- paste0('$', inp)
+#    myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
+#  }
+  
+  resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, qInput)
 }
