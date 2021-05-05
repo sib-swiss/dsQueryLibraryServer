@@ -1,6 +1,8 @@
 execQuery <- function(qDomain, qName, qInput, resource){
   allq <- get('allQueries', envir = .queryLibrary)
-  myQuery <- allq[[qDomain]][[qName]]$Query
+  qList <- allq[[qDomain]]
+  realQname <- grep(qName, names(qList), value = TRUE)
+  myQuery <- qList[[realQname]]$Query
 
   qInput <- dsSwissKnife:::.decode.arg(qInput)
 
