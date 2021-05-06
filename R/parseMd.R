@@ -45,8 +45,8 @@ parseMd <- function(fpath){
     if(is.data.frame(x)){
       x <- x[,-1, drop=FALSE]
       colnames(x) <- x[1,]
-      rownames(x) <- NULL
       x <- x[2:nrow(x),]
+      rownames(x) <- NULL
     }  
     x
   }, simplify = FALSE)
