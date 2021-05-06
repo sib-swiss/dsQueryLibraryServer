@@ -20,6 +20,7 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
 
 # must be set via option:
   myQuery <- gsub('@cdm', getOption('cdm_schema'), myQuery, fixed = TRUE)
+  myQuery <- gsub('@vocab', getOption('vocabulary_schema'), myQuery, fixed = TRUE)
 #  for (inp in names(qInput)){
 #    patt <- paste0('$', inp)
 #    myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
