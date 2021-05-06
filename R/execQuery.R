@@ -9,7 +9,7 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
     for (i in ls(envir = parent.frame())){
       x <- get(i, envir = parent.frame())
       if("SQLFlexClient" %in% class(x)){
-        resource <- x
+        resource <- i
         break
       }
     }
