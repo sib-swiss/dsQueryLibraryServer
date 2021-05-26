@@ -34,7 +34,7 @@ FROM (
 		INNER JOIN @cdm.observation_period AS obs ON obs.person_id = era.person_id
 			AND condition_era_start_date >= observation_period_start_date + 180*interval '1 day'
 				AND condition_era_start_date <= observation_period_end_date - 180*interval '1 day'
-		WHERE condition_concept_id IN (select cid from parms) /*(137829, 138723, 140065, 140681, 4031699, 4098027, 4098028, 4098145, 4098760, 4100998, 4101582, 4101583, 4120453, 4125496, 4125497, 4125498, 4125499, 4146086, 4146087, 4146088, 4148471, 4177177, 4184200, 4184758, 4186108, 4187773, 4188208, 4211348, 4211695, 4225810, 4228194, 4234973, 4298690, 4345236)*/
+		/*WHERE condition_concept_id IN (select cid from parms) (137829, 138723, 140065, 140681, 4031699, 4098027, 4098028, 4098145, 4098760, 4100998, 4101582, 4101583, 4120453, 4125496, 4125497, 4125498, 4125499, 4146086, 4146087, 4146088, 4148471, 4177177, 4184200, 4184758, 4186108, 4187773, 4188208, 4211348, 4211695, 4225810, 4228194, 4234973, 4298690, 4345236)*/
 		) condition
 	INNER JOIN @cdm.drug_era rx ON rx.person_id = condition.person_id
 		AND rx.drug_era_start_date >= condition_start_date
