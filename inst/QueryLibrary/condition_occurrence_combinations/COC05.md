@@ -14,12 +14,12 @@ CDM Version: 5.3
 
 
 ```sql
-SELECT COUNT(DISTINCT diagnosed.person_id)::integer AS all_infarctions,
+SELECT COUNT(DISTINCT diagnosed.person_id)::integer AS all_occurrences,
 	SUM(CASE
 			WHEN death.person_id IS NULL
 				THEN 0
 			ELSE 1
-			END)::integer AS death_from_infarction
+			END)::integer AS death_from_occurrence
 FROM 
 	(
 	SELECT DISTINCT person_id,
@@ -62,15 +62,15 @@ LEFT JOIN @cdm.death /* death within a year */
 
 |  Field |  Description |
 | --- | --- |
-| all_infarctions |   |
-| death_from_infarction |   |
+| all_occurrences |   |
+| death_from_occurrence |   |
 
 ## Example output record
 
 |  Field |  Description |
 | --- | --- |
-| all_infarctions |   |
-| death_from_infarction |   |
+| all_occurrences |   |
+| death_from_occurrence |   |
 
 ## Documentation
 https://github.com/OHDSI/CommonDataModel/wiki/
