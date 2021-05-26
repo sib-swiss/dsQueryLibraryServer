@@ -38,7 +38,7 @@ FROM
 			FROM @vocab.concept concept1
 			INNER JOIN @vocab.concept_relationship rel ON concept1.concept_id = rel.concept_id_1
 			INNER JOIN @vocab.concept_ancestor ca ON ancestor_concept_id = concept_id_2
-				AND concept1.concept_name = $2 /*'*/
+			  WHERE concept1.concept_name = $1::text /*'*/
 				AND rel.invalid_reason IS NULL
 			) conceptlist ON conceptlist.concept_id = condition_concept_id
 		INNER JOIN @cdm.observation_period obs ON obs.person_id = condition.person_id
