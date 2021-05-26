@@ -43,7 +43,7 @@ FROM /*Drugs started by people up to 30 days after Angioedema diagnosis */ (
   JOIN @cdm.drug_era rx /* Drug_era has drugs at ingredient level */
     ON rx.person_id = condition.person_id AND
        rx.drug_era_start_date >= condition.condition_start_date AND
-       rx.drug_era_start_date <= ondition.condition_start_date + 30*INTERVAL '1 day'
+       rx.drug_era_start_date <= condition.condition_start_date + 30*INTERVAL '1 day'
   JOIN /* Ingredients for indication Angioedema */ (
     SELECT
       ingredient.concept_id AS ingredient_concept_id ,
