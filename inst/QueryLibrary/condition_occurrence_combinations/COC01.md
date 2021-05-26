@@ -17,7 +17,7 @@ The following is a sample run of the query. The input parameters are highlighted
 SELECT
   ingredient_name,
   ingredient_concept_id,
-  count(*) AS num_patients
+  count(*)::integer AS num_patients
 FROM /*Drugs started by people up to 30 days after Angioedema diagnosis */ (
   SELECT
     condition.person_id,
@@ -32,18 +32,18 @@ FROM /*Drugs started by people up to 30 days after Angioedema diagnosis */ (
     FROM @cdm.condition_era era
     JOIN @cdm.observation_period obs
       ON obs.person_id = era.person_id AND
-         era.condition_era_start_date >= DATEADD(DAY,180,obs.observation_period_start_date) AND
-         era.condition_era_start_date <= DATEADD(DAY, -180,obs.observation_period_end_date)
+         era.condition_era_start_date >= obs.observation_period_start_date + 180*INTERVAL '1 day' AND
+         era.condition_era_start_date <= obs.observation_period_end_date -180*INTERVAL '1 day'
     WHERE
-      era.condition_concept_id IN -- SNOMed codes for Angioedema  
+      era.condition_concept_id IN 
       ( SELECT descendant_concept_id
         FROM @vocab.concept_ancestor
-        WHERE ancestor_concept_id=432791)
+        WHERE ancestor_concept_id= $1)
   ) condition
   JOIN @cdm.drug_era rx /* Drug_era has drugs at ingredient level */
     ON rx.person_id = condition.person_id AND
        rx.drug_era_start_date >= condition.condition_start_date AND
-       rx.drug_era_start_date <= DATEADD(day,30,condition.condition_start_date)
+       rx.drug_era_start_date <= DATEADD(day,30,condition.condition_start_date + 30*INTERVAL '1 day')
   JOIN /* Ingredients for indication Angioedema */ (
     SELECT
       ingredient.concept_id AS ingredient_concept_id ,
@@ -51,7 +51,7 @@ FROM /*Drugs started by people up to 30 days after Angioedema diagnosis */ (
     FROM @vocab.concept ingredient
     JOIN @vocab.concept_ancestor ca ON ca.descendant_concept_id = ingredient.concept_id
     WHERE
-      ca.ancestor_concept_id = 21003378 /* indication for angioedema */ AND
+      ca.ancestor_concept_id = $2 /* indication for angioedema */ AND
       ingredient.concept_class_id ='Ingredient'
   ) ingredients ON ingredients.ingredient_concept_id = rx.drug_concept_id
 ) therapy
