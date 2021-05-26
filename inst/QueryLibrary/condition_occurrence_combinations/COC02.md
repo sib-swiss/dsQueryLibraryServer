@@ -24,7 +24,7 @@ FROM (
 	SELECT condition.person_id,
 		condition.condition_start_date,
 		rx.drug_era_start_date,
-		DATEDIFF(day, rx.drug_era_start_date, rx.drug_era_end_date) + 1 AS length_of_therapy,
+	  rx.drug_era_end_date - rx.drug_era_start_date, + 1 AS length_of_therapy,
 		ingredient_name,
 		ingredient_concept_id
 	FROM (
@@ -38,7 +38,7 @@ FROM (
 		) condition
 	INNER JOIN @cdm.drug_era rx ON rx.person_id = condition.person_id
 		AND rx.drug_era_start_date >= condition_start_date
-			AND rx.drug_era_start_date <= condition_start_date + 30*interval '1 day')
+			AND rx.drug_era_start_date <= condition_start_date + 30*interval '1 day'
 	INNER JOIN (
 		SELECT DISTINCT ingredient.concept_id AS ingredient_concept_id,
 			ingredient.concept_name AS ingredient_name
