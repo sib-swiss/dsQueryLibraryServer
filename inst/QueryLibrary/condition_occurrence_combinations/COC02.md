@@ -10,9 +10,10 @@ CDM Version: 5.3
 ## Description
 
 ## Query
-The following is a sample run of the query. The input parameters are highlighted in  blue  
 
 ```sql
+WITH parms as (
+select cid::integer as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
 SELECT ingredient_name,
 	ingredient_concept_id,
 	count(*) AS num_patients,
@@ -31,24 +32,22 @@ FROM (
 			condition_era_start_date AS condition_start_date
 		FROM @cdm.condition_era era
 		INNER JOIN @cdm.observation_period AS obs ON obs.person_id = era.person_id
-			AND condition_era_start_date >= DATEADD(day,180,observation_period_start_date)
-				AND condition_era_start_date <= DATEADD(day,-180,observation_period_end_date)
-		WHERE condition_concept_id IN (137829, 138723, 140065, 140681, 4031699, 4098027, 4098028, 4098145, 4098760, 4100998, 4101582, 4101583, 4120453, 4125496, 4125497, 4125498, 4125499, 4146086, 4146087, 4146088, 4148471, 4177177, 4184200, 4184758, 4186108, 4187773, 4188208, 4211348, 4211695, 4225810, 4228194, 4234973, 4298690, 4345236)
+			AND condition_era_start_date >= observation_period_start_date + 180*interval '1 day'
+				AND condition_era_start_date <= observation_period_end_date - 180*interval '1 day'
+		WHERE condition_concept_id IN (select cid from parms) /*(137829, 138723, 140065, 140681, 4031699, 4098027, 4098028, 4098145, 4098760, 4100998, 4101582, 4101583, 4120453, 4125496, 4125497, 4125498, 4125499, 4146086, 4146087, 4146088, 4148471, 4177177, 4184200, 4184758, 4186108, 4187773, 4188208, 4211348, 4211695, 4225810, 4228194, 4234973, 4298690, 4345236)*/
 		) condition
 	INNER JOIN @cdm.drug_era rx ON rx.person_id = condition.person_id
 		AND rx.drug_era_start_date >= condition_start_date
-			AND rx.drug_era_start_date <= DATEADD(day, 30,condition_start_date)
+			AND rx.drug_era_start_date <= condition_start_date + 30*interval '1 day')
 	INNER JOIN (
 		SELECT DISTINCT ingredient.concept_id AS ingredient_concept_id,
 			ingredient.concept_name AS ingredient_name
 		FROM @vocab.concept_ancestor ancestor
 		INNER JOIN @vocab.concept indication ON ancestor.ancestor_concept_id = indication.concept_id
 		INNER JOIN @vocab.concept ingredient ON ingredient.concept_id = ancestor.descendant_concept_id
-		WHERE lower(indication.concept_name) LIKE ('%anemia%')
 			AND indication.vocabulary_id = 'Indication'
 			AND ingredient.concept_class_id = 'Ingredient'
-			AND indication.invalid_reason IS NULL /* not necessary as concept_ancestor stores only valid concepts */
-			AND ingredient.invalid_reason IS NULL /* not necessary as concept_ancestor stores only valid concepts */
+			AND indication.invalid_reason IS NULL 
 					) ingredients ON ingredient_concept_id = drug_concept_id
 	) treatment
 GROUP BY ingredient_name,
@@ -60,7 +59,7 @@ ORDER BY num_patients DESC;
 
 |  Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
-| condition_concept_id | 500000201 | Yes | SNOMed codes for OMOP Aplastic Anemia 1 |
+|list of  condition_concept_id | 4186108, 4187773, 4188208 | Yes |  |
 
 ## Output
 
