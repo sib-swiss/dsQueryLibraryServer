@@ -49,7 +49,7 @@ FROM
 	) diagnosed
 LEFT JOIN @cdm.death /* death within a year */
 	ON death.person_id = diagnosed.person_id
-	AND death.death_date <= condition_era_start_date + 360*interval '1 day');
+	AND death.death_date <= condition_era_start_date + 360*interval '1 day';
 ```
 
 ## Input
