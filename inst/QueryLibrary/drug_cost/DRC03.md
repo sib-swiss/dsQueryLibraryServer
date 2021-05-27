@@ -10,12 +10,14 @@ CDM Version: 5.3
 ## Description
 ## Query
 ```sql
-SELECT avg(c.paid_by_patient - c.paid_patient_copay) AS avg_out_pocket_cost, d.drug_concept_id
+WITH parms as (
+select cid::integer as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
+SELECT avg(c.paid_by_patient - c.paid_patient_copay)::numeric AS avg_out_pocket_cost, d.drug_concept_id
 FROM @cdm.cost c, @cdm.drug_exposure d
 WHERE d.drug_exposure_id = c.cost_event_id
 AND (c.paid_by_patient - c.paid_patient_copay) > 0
 AND d.drug_concept_id
-IN (906805, 1517070, 19010522)
+IN (select cid from parms)
 GROUP BY d.drug_concept_id;
 ```
 

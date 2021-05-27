@@ -15,14 +15,14 @@ This query is used to to provide summary statistics for costs paid by coinsuranc
 WITH tt as (
   SELECT c1.paid_patient_coinsurance AS stat_value
   ,      ROW_NUMBER() OVER (ORDER BY c1.paid_patient_coinsurance) order_nr
-  ,      (SELECT COUNT(*) FROM @cdm.cost WHERE paid_patient_coinsurance > 0) AS population_size
+  ,      (SELECT COUNT(*)::integer FROM @cdm.cost WHERE paid_patient_coinsurance > 0) AS population_size
   FROM @cdm.cost c1
   WHERE c1.paid_patient_coinsurance > 0
 )
-SELECT MIN(tt.stat_value) AS min_value
-,      MAX(tt.stat_value) AS max_value
-,      AVG(tt.stat_value) AS avg_value
-,      (ROUND(STDEV(tt.stat_value), 0) ) AS STDEV_value
+SELECT MIN(tt.stat_value)::numeric AS min_value
+,      MAX(tt.stat_value)::numeric AS max_value
+,      AVG(tt.stat_value)::numeric AS avg_value
+,      (ROUND(STDDEV(tt.stat_value), 0)::numeric ) AS STDEV_value
 ,      MIN(CASE WHEN order_nr < .25 * population_size THEN 9999 ELSE stat_value END) AS percentile_25
 ,      MIN(CASE WHEN order_nr < .50 * population_size THEN 9999 ELSE stat_value END) AS median_value
 ,      MIN(CASE WHEN order_nr < .75 * population_size THEN 9999 ELSE stat_value END) AS percentile_75
