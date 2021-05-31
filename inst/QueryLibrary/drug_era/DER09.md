@@ -13,9 +13,9 @@ This query is used to count the persons with any number of eras with exposure to
 ## Query
 ```sql
 WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
-select count(distinct r.person_id) as persons_count
+select count(distinct r.person_id)::integer as persons_count
 from @cdm.drug_era r
-where r.drug_concept_id in (select cid from parms);
+where r.drug_concept_id in (select cid::integer from parms);
 ```
 
 ## Input

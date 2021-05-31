@@ -13,7 +13,7 @@ This query is used to count the drug concepts across all drug era records. The i
 ## Query
 ```sql
 WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
-SELECT count(1) AS total_count FROM @cdm.drug_era r WHERE r.drug_concept_id in (select cid from parms);
+SELECT count(1) AS total_count FROM @cdm.drug_era r WHERE r.drug_concept_id in (select cid::integer from parms);
 ```
 
 ## Input
