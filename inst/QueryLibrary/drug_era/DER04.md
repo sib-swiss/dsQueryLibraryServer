@@ -14,7 +14,7 @@ CDM Version: 5.3
 SELECT        (CASE WHEN o.totalObs = 0 THEN 0 ELSE 100*(e.totExposure*1.0/o.totalObs*1.0) END)::numeric as proportion
 FROM
         (
-        SELECT        SUM((r.drug_era_end_date - r.drug_era_start_date)*interval '1 day') AS totExposure,
+        SELECT        SUM((r.drug_era_end_date - r.drug_era_start_date)*interval '1 day')::integer AS totExposure,
                         r.person_id
         FROM        @cdm.drug_era r
         WHERE
@@ -22,7 +22,7 @@ FROM
         group by        r.person_id
         ) e,
         (
-        SELECT        sum((p.observation_period_end_date-p.observation_period_start_date)*interval '1 day') AS totalObs,
+        SELECT        sum((p.observation_period_end_date-p.observation_period_start_date)*interval '1 day')::integer AS totalObs,
                         p.person_id FROM @cdm.observation_period p
         group by p.person_id
         ) o
