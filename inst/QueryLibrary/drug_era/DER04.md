@@ -22,7 +22,7 @@ FROM
         group by        r.person_id
         ) e,
         (
-        SELECT        sum(p.observation_period_end_date-p.observation_period_start_date)*interval '1 day') AS totalObs,
+        SELECT        sum((p.observation_period_end_date-p.observation_period_start_date)*interval '1 day') AS totalObs,
                         p.person_id FROM @cdm.observation_period p
         group by p.person_id
         ) o
