@@ -12,7 +12,7 @@ CDM Version: 5.3
 ## Query
 ```sql
 select
-        avg(datediff(day, t.drug_era_end_date, t.next_era_start)) as num_days
+        avg(date_part('day', t.next_era_start) - date_part('day', t.drug_era_end_date))::numeric as num_days
 from
         (
                 select
@@ -20,7 +20,7 @@ from
                         lead(r.drug_era_start_date) over(partition by r.person_id, r.drug_concept_id order by r.drug_era_start_date) as next_era_start
                 from
                         @cdm.drug_era r
-                where r.drug_concept_id = 1304643
+                where r.drug_concept_id = $1
         ) t
 where
         t.next_era_start is not null

@@ -12,13 +12,13 @@ CDM Version: 5.3
 ```sql
 select        tt.concept_id,
                 tt.concept_name,
-                100*(tt.cntPersons*1.0/tt.total*1.0) as proportion_count
+                100*(tt.cntPersons*1.0/tt.total*1.0)::numeric as proportion_count
 from
         (
         select        c.concept_id,
                         c.concept_name,
                         t.cntPersons,
-                        sum(cntPersons) over() as total
+                        cast(sum(cntPersons) over() as integer) as total
         from        @vocab.concept c,
                         (
                         select        r.drug_concept_id,
@@ -26,7 +26,7 @@ from
                         FROM        @vocab.concept_ancestor ca,
                                         @cdm.drug_era r
                         WHERE
-                                ca.ancestor_concept_id        = 4324992
+                                ca.ancestor_concept_id        = $1
                         AND        r.drug_concept_id                = ca.descendant_concept_id
                         group by
                                 r.drug_concept_id
