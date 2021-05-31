@@ -12,13 +12,14 @@ This query is used to count the number of different distinct drugs (drug_concept
 
 ## Query
 ```sql
+WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
 SELECT count(
 distinct t.drug_concept_id) AS drug_count, t.person_id
 FROM @cdm.drug_era t
 group by t.person_id
 having count(
 distinct t.drug_concept_id)
-in (3, 4);
+in (select cid::integer from parms);
 ```
 
 ## Input
