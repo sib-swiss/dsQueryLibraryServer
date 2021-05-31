@@ -18,8 +18,7 @@ FROM
                         r.person_id
         FROM        @cdm.drug_era r
         WHERE
-             
-        AND        r.drug_concept_id         = $1
+              r.drug_concept_id         = $1
         group by        r.person_id
         ) e,
         (
