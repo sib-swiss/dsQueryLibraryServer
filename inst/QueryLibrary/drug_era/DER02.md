@@ -8,7 +8,7 @@ CDM Version: 5.3
 # DER02: What is cost of ERA? - era -> exposure -> cost
 
 ## Description
-This query is used to count all gender values (gender_concept_id) for all exposed persons stratified by drug (drug_concept_id). The input to the query is a value (or a comma-separated list of values) of a gender_concept_id and drug_concept_id. If the input is omitted, all existing value combinations are summarized.
+
 
 ## Query
 ```sql
