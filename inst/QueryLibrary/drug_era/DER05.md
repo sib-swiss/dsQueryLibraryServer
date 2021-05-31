@@ -20,7 +20,7 @@ FROM  @vocab.concept_relationship cr,
       @cdm.drug_era er
 WHERE cr.concept_id_1 = ca.descendant_concept_id
   and er.drug_concept_id = ca.ancestor_concept_id
-  and cr.concept_id_2 = 21001738
+  and cr.concept_id_2 = $1
 
   and cr.relationship_id IN ('Has FDA-appr ind', 'Has off-label ind', 'May treat', 'May prevent', 'CI by', 'Is off-label ind of', 'Is FDA-appr ind of', 'May be treated by')
 GROUP BY er.drug_concept_id, cr.concept_id_2
