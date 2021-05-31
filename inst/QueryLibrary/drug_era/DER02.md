@@ -22,7 +22,7 @@ WHERE
                 from        @cdm.drug_era r,
                             @vocab.concept_ancestor m
                 where
-                        r.drug_era_id = 20--&era_id
+                        r.drug_era_id = $1
                         and r.person_id = e.person_id
                         and r.drug_concept_id = m.ancestor_concept_id
                         and e.drug_concept_id = m.descendant_concept_id

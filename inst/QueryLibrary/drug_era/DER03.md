@@ -26,7 +26,7 @@ from
         ) a
 ```
 
-## Input
+## Input 
 
 None
 
