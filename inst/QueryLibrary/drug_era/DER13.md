@@ -17,7 +17,7 @@ WITH tt AS (
   ,      ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT t.drug_concept_id)) order_nr
   ,      (SELECT COUNT(DISTINCT person_id)::INTEGER FROM @cdm.drug_era) AS population_size
   FROM @cdm.drug_era t
-  WHERE COALESECE(t.drug_concept_id, 0) > 0
+  WHERE COALESCE(t.drug_concept_id, 0) > 0
   GROUP BY t.person_id
 )
 SELECT MIN(tt.stat_value)::numeric AS min_value
