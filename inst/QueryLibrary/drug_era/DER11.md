@@ -16,9 +16,9 @@ SELECT DISTINCT MIN(tt.start_date) OVER () AS min_date
 ,      MAX(tt.start_date) OVER () AS max_date
 ,      tt.min_date + ROUND(AVG(CAST(tt.start_date_num AS INTEGER)) OVER (), 0)::integer  AS avg_date
 ,      ROUND(STDDEV(tt.start_date_num) OVER (), 0)::integer AS STDEV_days
-,      tt.min_date + MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 9999 ELSE tt.start_date_num END) over () AS percentile_25_date
-,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 9999 ELSE tt.start_date_num END) over () AS median_date
-,      tt.min_date + MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 9999 ELSE tt.start_date_num END) over () AS percentile_75_date
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 9999 ELSE tt.start_date_num END)::integer over () AS percentile_25_date
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 9999 ELSE tt.start_date_num END)::integer over () AS median_date
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 9999 ELSE tt.start_date_num END)::integer over () AS percentile_75_date
 
 FROM (
        SELECT  (t.drug_era_start_date - MIN(t.drug_era_end_date) OVER()) AS start_date_num
