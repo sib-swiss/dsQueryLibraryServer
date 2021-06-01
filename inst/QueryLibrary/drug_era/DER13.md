@@ -13,20 +13,20 @@ This query is used to provide summary statistics for the number of number of dif
 ## Query
 ```sql
 WITH tt AS (
-  SELECT COUNT(DISTINCT t.drug_concept_id) AS stat_value
+  SELECT COUNT(DISTINCT t.drug_concept_id)::INTEGER AS stat_value
   ,      ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT t.drug_concept_id)) order_nr
-  ,      (SELECT COUNT(DISTINCT person_id) FROM @cdm.drug_era) AS population_size
+  ,      (SELECT COUNT(DISTINCT person_id)::INTEGER FROM @cdm.drug_era) AS population_size
   FROM @cdm.drug_era t
-  WHERE ISNULL(t.drug_concept_id, 0) > 0
+  WHERE COALESECE(t.drug_concept_id, 0) > 0
   GROUP BY t.person_id
 )
-SELECT MIN(tt.stat_value) AS min_value
-,      MAX(tt.stat_value) AS max_value
-,      AVG(tt.stat_value) AS avg_value
-,      ROUND(STDEV(tt.stat_value), 0) AS STDEV_value
-,      MIN(CASE WHEN order_nr < .25 * population_size THEN 9999 ELSE stat_value END) AS percentile_25
-,      MIN(CASE WHEN order_nr < .50 * population_size THEN 9999 ELSE stat_value END) AS median_value
-,      MIN(CASE WHEN order_nr < .75 * population_size THEN 9999 ELSE stat_value END) AS percentile_75
+SELECT MIN(tt.stat_value)::numeric AS min_value
+,      MAX(tt.stat_value)::numeric AS max_value
+,      AVG(tt.stat_value)::numeric AS avg_value
+,      ROUND(STDDEV(tt.stat_value), 0)::numeric AS STDEV_value
+,      MIN(CASE WHEN order_nr < .25 * population_size THEN 9999 ELSE stat_value END)::numeric AS percentile_25
+,      MIN(CASE WHEN order_nr < .50 * population_size THEN 9999 ELSE stat_value END)::numeric AS median_value
+,      MIN(CASE WHEN order_nr < .75 * population_size THEN 9999 ELSE stat_value END)::numeric AS percentile_75
 FROM tt;
 ```
 
