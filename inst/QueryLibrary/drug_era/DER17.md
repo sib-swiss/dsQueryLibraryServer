@@ -17,7 +17,7 @@ SELECT MONTH(er.drug_era_start_date) month_num, COUNT(1)::integer as eras_in_mon
 FROM @cdm.drug_era er
 WHERE date_part('month',er.drug_era_start_date)
 IN (select cid::integer from params)
-GROUP BY MONTH(er.drug_era_start_date)
+GROUP BY date_part('month',er.drug_era_start_date)
 ORDER BY 1;
 ```
 
