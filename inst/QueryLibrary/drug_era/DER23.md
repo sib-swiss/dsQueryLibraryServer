@@ -12,16 +12,17 @@ This query is used to summary statistics of the drug era start dates (drug_era_s
 
 ## Query
 ```sql
-WITH drugs AS (
+WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid,
+drugs AS (
          SELECT DISTINCT drug_concept_id
          FROM   @cdm.drug_era
-         WHERE drug_concept_id IN (1300978, 1304643, 1549080)
+         WHERE ((select count(1) from parms) = 0 or drug_concept_id IN (select cid::integer from parms))
      ),
      start_date AS (
          SELECT t1.drug_concept_id
          ,      drug_era_start_date start_date
          ,      MIN(t1.drug_era_start_date) OVER(partition by t1.drug_concept_id) min_start_date
-         ,      DATEDIFF(day, MIN(t1.drug_era_start_date) OVER(PARTITION BY t1.drug_concept_id), t1.drug_era_start_date) AS start_date_num
+         ,      t1.drug_era_start_date - MIN(t1.drug_era_start_date) OVER(PARTITION BY t1.drug_concept_id) AS start_date_num
          FROM @cdm.drug_era t1
          WHERE t1.drug_concept_id IN (SELECT drug_concept_id FROM drugs)
      ),
@@ -37,11 +38,11 @@ WITH drugs AS (
 SELECT tt.drug_concept_id
 ,      MIN(tt.start_date_num) AS min_value
 ,      MAX(tt.start_date_num) AS max_value
-,      DATEADD(day, AVG(CAST(tt.start_date_num AS BIGINT)), tt.min_date) AS avg_value
-,      ROUND(STDEV(tt.start_date_num), 0) AS STDEV_value
-,      DATEADD(day, MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 99999999 ELSE tt.start_date_num END), tt.min_date) AS percentile_25
-,      DATEADD(day, MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 99999999 ELSE tt.start_date_num END), tt.min_date) AS median_value
-,      DATEADD(day, MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 99999999 ELSE tt.start_date_num END), tt.min_date) AS percentile_75
+,      tt.min_date + AVG(CAST(tt.start_date_num AS integer)) AS avg_value
+,      ROUND(STDDEV(tt.start_date_num), 0) AS STDEV_value
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 99999999 ELSE tt.start_date_num END) AS percentile_25
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 99999999 ELSE tt.start_date_num END) AS median_value
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 99999999 ELSE tt.start_date_num END) AS percentile_75
 FROM tt
 GROUP BY tt.drug_concept_id
 ,        tt.min_date
@@ -52,7 +53,7 @@ ORDER BY drug_concept_id;
 
 | Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
-| drug_concept_id | 1300978, 1304643, 1549080 | Yes |   |
+| drug_concept_id | 1300978, 1304643, 1549080 | No |   |
 
 ## Output
 
