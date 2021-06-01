@@ -38,7 +38,7 @@ drugs AS (
 SELECT tt.drug_concept_id
 ,      MIN(tt.start_date_num) AS min_value
 ,      MAX(tt.start_date_num) AS max_value
-,      tt.min_date + AVG(CAST(tt.start_date_num AS integer)) AS avg_value
+,      tt.min_date + cast(AVG(CAST(tt.start_date_num AS integer)) as integer) AS avg_value
 ,      ROUND(STDDEV(tt.start_date_num), 0) AS STDEV_value
 ,      tt.min_date + MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 99999999 ELSE tt.start_date_num END) AS percentile_25
 ,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 99999999 ELSE tt.start_date_num END) AS median_value
