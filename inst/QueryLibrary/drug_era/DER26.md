@@ -15,8 +15,7 @@ This query is used to count all genders (gender concept_id), stratified by drug 
 WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
 SELECT p.gender_concept_id, count(1)::integer AS stat_value, t.drug_concept_id
 FROM @cdm.drug_era t, @cdm.person p
-WHERE t.drug_concept_id
- ((select count(1) from parms) = 0 or t.drug_concept_id IN (select cid::integer from parms))
+WHERE ((select count(1) from parms) = 0 or t.drug_concept_id IN (select cid::integer from parms))
 AND p.person_id = t.person_id
 GROUP BY t.drug_concept_id, p.gender_concept_id
 ORDER BY t.drug_concept_id, p.gender_concept_id;
