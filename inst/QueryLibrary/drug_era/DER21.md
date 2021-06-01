@@ -31,7 +31,6 @@ from (
     @cdm.person p
     where t.person_id = p.person_id and
     ((select count(1) from drg_parms) = 0  or t.drug_concept_id in (select cid::integer from drg_parms))
-  where
 ) tt
 where
  ((select count(1) from year_parms) = 0 or tt.year_of_Era in (select cid::integer from year_parms))
