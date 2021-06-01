@@ -12,6 +12,7 @@ This query is used to provide summary statistics for the age across all drug era
 
 ## Query
 ```sql
+WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid)
 SELECT drug_concept_id
 ,      min_value
 ,      max_value
