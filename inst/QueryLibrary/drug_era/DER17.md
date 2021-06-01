@@ -16,7 +16,7 @@ WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::
 SELECT date_part('month',er.drug_era_start_date) month_num, COUNT(1)::integer as eras_in_month_count
 FROM @cdm.drug_era er
 WHERE date_part('month',er.drug_era_start_date)
-IN (select cid::integer from params)
+IN (select cid::integer from parms)
 GROUP BY date_part('month',er.drug_era_start_date)
 ORDER BY 1;
 ```
