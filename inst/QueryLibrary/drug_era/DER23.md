@@ -12,7 +12,7 @@ This query is used to summary statistics of the drug era start dates (drug_era_s
 
 ## Query
 ```sql
-WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid,
+WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid),
 drugs AS (
          SELECT DISTINCT drug_concept_id
          FROM   @cdm.drug_era
