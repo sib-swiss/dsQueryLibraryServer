@@ -12,10 +12,11 @@ This query is used to count the drug era records stratified by observation month
 
 ## Query
 ```sql
-SELECT MONTH(er.drug_era_start_date) month_num, COUNT(1) as eras_in_month_count
+WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::integer, '\s*,\s*')) as cid) 
+SELECT MONTH(er.drug_era_start_date) month_num, COUNT(1)::integer as eras_in_month_count
 FROM @cdm.drug_era er
-WHERE MONTH(er.drug_era_start_date)
-IN (3, 5)
+WHERE date_part('month',er.drug_era_start_date)
+IN (select cid from params)
 GROUP BY MONTH(er.drug_era_start_date)
 ORDER BY 1;
 ```
