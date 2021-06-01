@@ -16,7 +16,7 @@ WITH parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::
 drugs AS (
          SELECT drug_concept_id
          FROM   @cdm.drug_era
-         WHERE ((select count(1) from parms) = 0 or drug_concept_id IN (select cid::integer from parms)
+         WHERE ((select count(1) from parms) = 0 or drug_concept_id IN (select cid::integer from parms))
      ),
      tt AS (
          SELECT t.drug_concept_id
