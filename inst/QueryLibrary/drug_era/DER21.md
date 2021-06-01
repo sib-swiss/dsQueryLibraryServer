@@ -13,7 +13,7 @@ This query is used to count drugs (drug_concept_id) across all drug era records 
 ## Query
 ```sql
 WITH drg_parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid),
-year_parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($2::text, '')::text, '\s*,\s*')) as cid),
+year_parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($2::text, '')::text, '\s*,\s*')) as cid)
 SELECT
   tt.drug_concept_id,
   count(1)::integer as s_count,
