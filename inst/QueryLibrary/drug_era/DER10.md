@@ -17,7 +17,7 @@ SELECT DISTINCT MIN(tt.end_date) over () AS min_date
 ,      tt.min_date + AVG(CAST(tt.end_date_num AS BIGINT)) OVER () AS avg_date
 ,      ROUND(STDDEV(tt.end_date_num) over (), 0) AS STDEV_days
 ,      tt.min_date + MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 9999 ELSE tt.end_date_num END) over () AS percentile_25_date
-,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 9999 ELSE tt.end_date_num END) over (), AS median_date
+,      tt.min_date + MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 9999 ELSE tt.end_date_num END) over () AS median_date
 ,      tt.min_date + MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 9999 ELSE tt.end_date_num END) over () AS percentile_75_date
 FROM
     (
