@@ -8,7 +8,7 @@ CDM Version: 5.3
 # DER13: Distribution of number of distinct drugs persons take
 
 ## Description
-This query is used to provide summary statistics for the number of number of different distinct drugs (drug_concept_id) of all exposed persons: the mean, the standard deviation, the minimum, the 25th percentile, the median, the 75th percentile, the maximum and the number of missing values. No input is required for this query.
+This query is used to provide summary statistics for the number of different distinct drugs (drug_concept_id) of all exposed persons: the mean, the standard deviation, the minimum, the 25th percentile, the median, the 75th percentile, the maximum and the number of missing values. No input is required for this query.
 
 ## Query
 ```sql
