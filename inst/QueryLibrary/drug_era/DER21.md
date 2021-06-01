@@ -12,28 +12,29 @@ This query is used to count drugs (drug_concept_id) across all drug era records 
 
 ## Query
 ```sql
+WITH drg_parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($1::text, '')::text, '\s*,\s*')) as cid),
+year_parms as (select cid as cid  from unnest(regexp_split_to_array( nullif($2::text, '')::text, '\s*,\s*')) as cid),
 SELECT
   tt.drug_concept_id,
-  count(1) as s_count,
+  count(1)::integer as s_count,
   tt.age_band,
   tt.year_of_Era,
   tt.gender_concept_id
 from (
   SELECT
-    floor( (YEAR(t.drug_era_start_date ) - p.year_of_birth )/10 ) as age_band,
-        YEAR(t.drug_era_start_date) as year_of_era,
+    floor( (date_part('year',t.drug_era_start_date ) - p.year_of_birth )/10 ) as age_band,
+        date_part('year',t.drug_era_start_date) as year_of_era,
         p.gender_concept_id,
         t.drug_concept_id
   FROM
     @cdm.drug_era t,
     @cdm.person p
-  where
     t.person_id = p.person_id and
-    t.drug_concept_id in (1300978, 1304643, 1549080)
+    ((select count(1) from drg_parms) = 0  or t.drug_concept_id in (select cid::integer from drg_parms))
+  where
 ) tt
 where
-  tt.age_band in(3,4) and
-  tt.year_of_Era in( 2007, 2008)
+ ((select count(1) from year_parms) = 0 or tt.year_of_Era in (select cid::integer from year_parms))
 group by
   tt.age_band,
   tt.year_of_Era,
@@ -51,8 +52,8 @@ order by
 
 | Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
-| list of concept_id | 1300978, 1304643, 1549080 | Yes |   |
-| list of year_of_era | 2007, 2008 | Yes |   |
+| list of concept_id | 1300978, 1304643, 1549080 | No |   |
+| list of year_of_era | 2007, 2008 | No |   |
 
 ## Output
 
