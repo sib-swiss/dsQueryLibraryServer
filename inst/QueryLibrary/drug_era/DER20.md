@@ -46,7 +46,7 @@ SELECT DISTINCT tt.drug_concept_id
 ,      cast(MIN(tt.stat_value) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS min_value
 ,      cast(MAX(tt.stat_value) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS max_value
 ,      cast(AVG(tt.stat_value) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS avg_value
-,      cast(STDDEV(tt.stat_value) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS STDEV_value
+,      round(cast(STDDEV(tt.stat_value) OVER ( PARTITION BY tt.drug_concept_id) as numeric),0) AS STDEV_value
 ,      cast(MIN(CASE WHEN tt.order_nr < .25 * tt.population_size THEN 9999 ELSE tt.stat_value END) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS percentile_25
 ,      cast(MIN(CASE WHEN tt.order_nr < .50 * tt.population_size THEN 9999 ELSE tt.stat_value END) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS median_value
 ,      cast(MIN(CASE WHEN tt.order_nr < .75 * tt.population_size THEN 9999 ELSE tt.stat_value END) OVER ( PARTITION BY tt.drug_concept_id) as numeric) AS percentile_75
