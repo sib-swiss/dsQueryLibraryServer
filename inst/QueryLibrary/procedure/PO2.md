@@ -31,18 +31,17 @@ SELECT DISTINCT
   C.concept_code          AS Entity_Code,
   'Concept'               AS Entity_Type,
   C.concept_class_id      AS Entity_concept_class_id,
-  C.vocabulary_id         AS Entity_vocabulary_id
+  C.vocabulary_id         AS Entity_vocabulary_id,
+  C.valid_start_date      AS Entity_valid_start_date,
+  C.valid_end_date        AS Entity_valid_end_date
 FROM @vocab.concept C
 LEFT JOIN @vocab.concept_synonym S
 ON C.concept_id = S.concept_id
 WHERE C.vocabulary_id IN ('SNOMED','ICD9Proc','ICD10PCS','CPT4','CDT','HCPCS','SNOMED Veterinary','OPCS4')
       AND C.domain_id = 'Procedure'
       AND C.standard_concept = 'S'
-      -- regular expression containing the input pattern
-      AND LOWER(C.concept_name) LIKE LOWER('%Fixation of fracture%')
-            OR LOWER(S.concept_synonym_name) LIKE LOWER('%Fixation of fracture%')
-      -- Retrieve only valid concepts
-      AND WHERE getdate() >= C.valid_start_date AND getdate() <= C.valid_end_date;
+      AND (lower(c.concept_name) LIKE concat('%', lower($1::text), '%')
+            OR LOWER(S.concept_synonym_name) LIKE concat('%', lower($1::text), '%'));
 ```
 
 ## Input
@@ -50,7 +49,6 @@ WHERE C.vocabulary_id IN ('SNOMED','ICD9Proc','ICD10PCS','CPT4','CDT','HCPCS','S
 | Parameter |  Example |  Mandatory |  Notes |
 | --- | --- | --- | --- |
 |  Keyword |  'artery bypass' |  Yes | Procedure keyword search |
-|  As of date |  Sysdate |  No | Valid record as of specific date. Current date – sysdate is a default |
 
 ## Output
 
