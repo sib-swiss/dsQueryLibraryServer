@@ -2,7 +2,7 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
   allq <- get('allQueries', envir = .queryLibrary)
   qList <- allq[[qDomain]]
   realQname <- grep(qName, names(qList), value = TRUE)
-  myQuery <- qList[[realQname]]$Query
+  myQuery <- paste(qList[[realQname]]$Query, collapse = ' ')
 
   qInput <- dsSwissKnife:::.decode.arg(qInput)
   if(is.null(resource)){
