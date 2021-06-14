@@ -30,7 +30,7 @@ parseMd <- function(fpath){
   
     if(nchar(myLine) > 0  && !grepl('```|---', myLine)){
       if(elName=='Query' && isQuery){
-        try(ret[[elName]] <- c(ret[[elName]], myLine)
+        try(ret[[elName]] <- c(ret[[elName]], myLine))
       } else if(grepl('\\|', myLine)){
         myNewLine <- strsplit(myLine,'\\s*\\|\\s*')[[1]]
         try(ret[[elName]] <- as.data.frame(rbind(ret[[elName]], myNewLine), stringsAsFactors = FALSE, row.names=NULL))
