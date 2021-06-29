@@ -4,6 +4,8 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
                   })
   qList <- allq[[qDomain]]
   realQname <- grep(qName, names(qList), value = TRUE)
+  message(qDomain)
+  message(names(qList))
   message(qName)
   message(realQname)
   myQuery <- paste(qList[[realQname]]$Query, collapse = ' ')
