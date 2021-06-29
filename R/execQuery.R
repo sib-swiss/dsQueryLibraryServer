@@ -4,6 +4,7 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
                   })
   qList <- allq[[qDomain]]
   realQname <- grep(qName, names(qList), value = TRUE)[1]
+  message(paste0('here', realQname))
   if(is.na(realQname)){
     stop(paste0('No such query name: ', qName, ' or domain: ', qDomain, '.'))
   }
