@@ -4,7 +4,9 @@ execQuery <- function(qDomain, qName, qInput, resource = NULL){
                   })
   qList <- allq[[qDomain]]
   realQname <- grep(qName, names(qList), value = TRUE)[1]
-  
+  if(is.na(realQname)){
+    stop(paste0('No such query name: ', qName, ' or domain: ', qDomain, '.'))
+  }
   myQuery <- paste(qList[[realQname]]$Query, collapse = ' ')
 
   qInput <- dsSwissKnife:::.decode.arg(qInput)
