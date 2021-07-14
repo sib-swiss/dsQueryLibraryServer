@@ -44,6 +44,8 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, resource = NULL){
     symbol <- realQname
   }
   assign(symbol, ret, envir = parent.frame())
+  return(TRUE)
+  
 }
 
 
