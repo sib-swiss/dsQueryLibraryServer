@@ -13,7 +13,6 @@ loadAllQueries <- function(){
     if(length(lst) == 0){
       next
     }
-    print(lst)
     ret[[typ]]<- sapply( lst, function(domain){
     
         unlist(lapply(list.files(paste0(ql, domain), recursive = TRUE, no..=TRUE), function(x){
@@ -25,7 +24,7 @@ loadAllQueries <- function(){
           out[[make.names(n)]] <- rt
           out
         }), recursive = FALSE)
-    })
+    }, simplify = FALSE)
   
   }
   
