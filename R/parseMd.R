@@ -50,5 +50,8 @@ parseMd <- function(fpath){
     }  
     x
   }, simplify = FALSE)
+  if(!('Input' %in% names(ret))){
+    ret$Input <- 'None'
+  }
   ret
 }
