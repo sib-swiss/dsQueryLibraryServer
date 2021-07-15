@@ -1,5 +1,8 @@
 # measurement
 
+## Description
+This query loads the measurement table and adds a few useful columns (measurement name and type, measure unit) by joining it to the concept table.
+
 ## Query
 
 ```sql

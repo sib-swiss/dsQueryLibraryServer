@@ -1,4 +1,4 @@
-execQuery <- function(qDomain, qName, qInput, symbol = NULL, resource = NULL){
+execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, resource = NULL){
   allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
                      loadAllQueries()
                   })
@@ -32,10 +32,23 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, resource = NULL){
 # must be set via option:
   myQuery <- gsub('@cdm', getOption('cdm_schema'), myQuery, fixed = TRUE)
   myQuery <- gsub('@vocab', getOption('vocabulary_schema'), myQuery, fixed = TRUE)
-#  for (inp in names(qInput)){
-#    patt <- paste0('$', inp)
-#    myQuery <- gsub(patt, qInput[[inp]], myQuery, fixed = TRUE)
-#  }
+  
+  # add the filter and limit
+  if(!is.null(rowFilter) && typ == 'Assign'){
+    filter <- dsSwissKnife:::.decode.arg(rowFilter)
+
+    # some basic sql injection defense:
+    if(grepl('delete|drop|insert|truncate|update|;', rowFilter, ignore.case = TRUE)){
+      stop('The filtering clause looks dangerous, not executing', call. = FALSE)
+    }
+    
+    myQuery <- paste0('select * from (', myQuery,  ') xyx where ', rowFilter)
+  }
+  if(!is.null(rowLimit) && typ == 'Assign'){
+    myQuery <- paste0('select * from (', myQuery,  ') zyz limit ', rowLimit)
+  }
+  
+  
   ret <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, params = qInput)
   if(typ == 'Aggregate'){
     return(ret)
