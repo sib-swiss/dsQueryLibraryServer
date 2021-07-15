@@ -9,7 +9,7 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
     }
   }
   realQname <- grep(qName, names(qList), value = TRUE)[1]
-  message(paste0('here', realQname))
+
   if(is.na(realQname)){
     stop(paste0('No such query name: ', qName, ' or domain: ', qDomain, '.'), call. = FALSE)
   }
@@ -34,9 +34,8 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
   myQuery <- gsub('@vocab', getOption('vocabulary_schema'), myQuery, fixed = TRUE)
   
   # add the filter and limit
+  rowFilter <- dsSwissKnife:::.decode.arg(rowFilter)
   if(!is.null(rowFilter) && typ == 'Assign'){
-    filter <- dsSwissKnife:::.decode.arg(rowFilter)
-
     # some basic sql injection defense:
     if(grepl('delete|drop|insert|truncate|update|;', rowFilter, ignore.case = TRUE)){
       stop('The filtering clause looks dangerous, not executing', call. = FALSE)
