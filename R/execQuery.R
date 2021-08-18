@@ -63,14 +63,14 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
 
 
 .strip_sensitive_cols <- function(cols, df){
-  warn(cols)
+  warning(cols)
   you_must <- getOption('dsQueryLibrary.enforce_strict_privacy', default = TRUE)
   if(you_must && !is.null(cols)){
     cols <- strsplit(cols, ',\\s*')[[1]]
     lim <- getOption("datashield.privacyLevel", default = 5)
     for (mycol in cols){
-      warn(mycol)
-      warn(colnames(df))
+      warning(mycol)
+      warning(colnames(df))
       mycol <- gsub(mycol, '\\s+', '')
       df[df[,mycol] < lim, mycol] <- NA
     }
