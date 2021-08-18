@@ -50,6 +50,7 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
   
   ret <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, params = qInput)
   if(typ == 'Aggregate'){
+  ret <- .strip_sensitive_cols(qList[[realQname]][['Sensitive fields']], ret)
     return(ret)
   } # else it's Assign:
   if(is.null(symbol)){
@@ -58,6 +59,20 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
   assign(symbol, ret, envir = parent.frame())
   return(TRUE)
   
+}
+
+
+.strip_sensitive_cols <- function(cols, df){
+  you_must <- getOption('dsQueryLibrary.enforce_strict_privacy', default = TRUE)
+  if(you_must && !is.null(cols)){
+    cols <- strsplit(cols, ',\\s*')[[1]]
+    lim <- getOption("datashield.privacyLevel", default = 5)
+    for (mycol in cols){
+      df[df[,mycol] < lim, mycol] <- NA
+    }
+    
+  }
+  return(df)
 }
 
 
