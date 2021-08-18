@@ -68,6 +68,7 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
     cols <- strsplit(cols, ',\\s*')[[1]]
     lim <- getOption("datashield.privacyLevel", default = 5)
     for (mycol in cols){
+      mycol <- gsub(mycol, '\\s+', '')
       df[df[,mycol] < lim, mycol] <- NA
     }
     
