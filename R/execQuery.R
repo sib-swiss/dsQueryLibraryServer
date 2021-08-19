@@ -30,8 +30,8 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
   }
 
 # must be set via option:
-  myQuery <- gsub('@cdm', getOption('cdm_schema'), myQuery, fixed = TRUE)
-  myQuery <- gsub('@vocab', getOption('vocabulary_schema'), myQuery, fixed = TRUE)
+  myQuery <- gsub('@cdm', getOption('cdm_schema', default = 'public'), myQuery, fixed = TRUE)
+  myQuery <- gsub('@vocab', getOption('vocabulary_schema', default = 'public'), myQuery, fixed = TRUE)
   
   # add the filter and limit
   rowFilter <- dsSwissKnife:::.decode.arg(rowFilter)
