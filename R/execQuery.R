@@ -1,5 +1,7 @@
 execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, resource = NULL){
-  allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
+ 
+myEnv <- parent.frame()  
+ allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
                      loadAllQueries()
                   })
   for (typ in c('Assign', 'Aggregate')){
@@ -17,11 +19,11 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
 
   qInput <- dsSwissKnife:::.decode.arg(qInput)
   if(is.null(resource)){
-    for (i in ls(envir = parent.frame())){
-      x <- get(i, envir = parent.frame())
+    resource <- c()
+    for (i in ls(envir = myEnv)){
+      x <- get(i, envir = myEnv)
       if("SQLFlexClient" %in% class(x)){
-        resource <- i
-        break
+        resource <- c(resource, i)
       }
     }
   }
@@ -48,15 +50,24 @@ execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, r
   }
   
   
-  ret <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, params = qInput)
+  ret <- sapply(resource, function(x){
+     resourcex::loadQuery(get(x, envir = myEnv), myQuery, params = qInput)
+   }, simplify = FALSE)
+  
+  
+  #ret <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, params = qInput)
+  
+  
   if(typ == 'Aggregate'){
-  ret <- .strip_sensitive_cols(qList[[realQname]][['Sensitive fields']], ret)
+  ret <- sapply(ret, function(x) .strip_sensitive_cols(qList[[realQname]][['Sensitive fields']], x), simplify = FALSE)
     return(ret)
   } # else it's Assign:
   if(is.null(symbol)){
     symbol <- realQname
   }
-  assign(symbol, ret, envir = parent.frame())
+  sapply(names(ret), function(x){
+    assign(paste0(symbol, '_', x), ret[[x]], envir = myEnv)
+  })
   return(TRUE)
   
 }
