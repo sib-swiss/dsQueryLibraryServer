@@ -69,7 +69,9 @@ myEnv <- parent.frame()
 
     # if there's more than one, add a column with the resource name:
     if(length(names(ret)) > 1){
-      ret[[x]]$database <- x
+      if(NROW(ret[[x]]) > 0 ){
+        ret[[x]]$database <- x
+      }
     }
     # export it in the environment:
     assign(paste0(symbol, '_', x), ret[[x]], envir = myEnv)
