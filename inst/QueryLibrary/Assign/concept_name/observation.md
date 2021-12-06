@@ -6,7 +6,7 @@ This query loads the observation table and adds a few useful columns  by joining
 ## Query
 
 ```sql
-SELECT o.person_id, o_name.concept_name as observation, o.observation_date, o_type.concept_name,o.value_as_number,o.value_as_string, o.value_as_concept_id, o.qualifier_concept_id, o_unit.concept_name as unit, o.provider_id, o.visit_occurrence_id, o.visit_detail_id 
+SELECT o.person_id, o_name.concept_name as observation, o.observation_date, o_type.concept_name as observation_type,o.value_as_number,o.value_as_string, o.value_as_concept_id, o.qualifier_concept_id, o_unit.concept_name as unit, o.provider_id, o.visit_occurrence_id, o.visit_detail_id 
 FROM @cdm.observation AS o 
 INNER JOIN @vocab.concept as o_name ON o.observation_concept_id = o_name.concept_id
 INNER JOIN @vocab.concept as o_type ON o.observation_type_concept_id = o_type.concept_id
