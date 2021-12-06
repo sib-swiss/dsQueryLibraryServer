@@ -51,7 +51,7 @@ myEnv <- parent.frame()
   
   
   ret <- sapply(resource, function(x){
-     resourcex::loadQuery(get(x, envir = myEnv), myQuery, params = qInput)
+    out <- resourcex::loadQuery(get(x, envir = myEnv), myQuery, params = qInput)
    }, simplify = FALSE)
   
   
@@ -66,6 +66,12 @@ myEnv <- parent.frame()
     symbol <- realQname
   }
   sapply(names(ret), function(x){
+
+    # if there's more than one, add a column with the resource name:
+    if(length(names(ret)) > 1){
+      ret[[x]]$database <- x
+    }
+    # export it in the environment:
     assign(paste0(symbol, '_', x), ret[[x]], envir = myEnv)
   })
   return(TRUE)
