@@ -72,9 +72,10 @@ myEnv <- parent.frame()
       if(NROW(ret[[x]]) > 0 ){
         ret[[x]]$database <- x
       }
+      symbol <- paste0(symbol, '_', x)
     }
     # export it in the environment:
-    assign(paste0(symbol, '_', x), ret[[x]], envir = myEnv)
+    assign(symbol, ret[[x]], envir = myEnv)
   })
   return(TRUE)
   
