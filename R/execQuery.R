@@ -1,4 +1,4 @@
-execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, resource = NULL){
+execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, resource = NULL, union = TRUE){
  
 myEnv <- parent.frame()  
  allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
@@ -65,18 +65,35 @@ myEnv <- parent.frame()
   if(is.null(symbol)){
     symbol <- realQname
   }
-  sapply(names(ret), function(x){
+#  sapply(names(ret), function(x){
 
     # if there's more than one, add a column with the resource name:
-    if(length(names(ret)) > 1){
+  #   if(length(names(ret)) > 1){
+  #     if(NROW(ret[[x]]) > 0 ){
+  #       ret[[x]]$database <- x
+  #     }
+  #     symbol <- paste0(symbol, '_', x)
+  #   }
+  #   # export it in the environment:
+  #   assign(symbol, ret[[x]], envir = myEnv)
+  # })
+  
+  # if there's more than one, add a column with the resource name:
+  
+  if(length(names(ret)) > 1){
+    sapply(names(ret), function(x){
       if(NROW(ret[[x]]) > 0 ){
         ret[[x]]$database <- x
       }
-      symbol <- paste0(symbol, '_', x)
+    })
+    # rbind them all if so asked:
+    if(union){
+      assign(symbol, Reduce(rbind, ret), envir = .GlobalEnv)
+    } else { # or not:
+      sapply(names(ret), function(x){
+        assign(paste0(symbol, '_', x), ret, envir = .GlobalEnv)
+      })
     }
-    # export it in the environment:
-    assign(symbol, ret[[x]], envir = myEnv)
-  })
   return(TRUE)
   
 }
