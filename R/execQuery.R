@@ -27,8 +27,10 @@ myEnv <- parent.frame()
       }
     }
   }
-  if(is.null(resource)){
+  if(is.null(resource)){ # still
     stop('Could not find a suitable database connection.')
+  } else {
+    resource <- dsSwissKnife:::.decode.arg(resource)
   }
 
 # must be set via option:
@@ -81,21 +83,26 @@ myEnv <- parent.frame()
   # if there's more than one, add a column with the resource name:
   
   if(length(names(ret)) > 1){
-    sapply(names(ret), function(x){
+    ret <- sapply(names(ret), function(x){
       if(NROW(ret[[x]]) > 0 ){
         ret[[x]]$database <- x
+        ret[[x]]
       }
-    })
+    }, simplify = FALSE)
     # rbind them all if so asked:
     if(union){
       assign(symbol, Reduce(rbind, ret), envir = .GlobalEnv)
     } else { # or not:
       sapply(names(ret), function(x){
-        assign(paste0(symbol, '_', x), ret, envir = .GlobalEnv)
+        assign(paste0(symbol, '_', x), ret[[x]], envir = .GlobalEnv)
       })
     }
-  return(TRUE)
+
   
+  } else { # only one db
+    assign(symbol, ret[[1]], envir = .GlobalEnv)
+  }
+  return(TRUE)
 }
 
 

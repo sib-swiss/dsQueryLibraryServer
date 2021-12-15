@@ -15,7 +15,7 @@ AggregateMethods:
     execQuery
 Depends:
     resourcex,
-    dsSwissKnife,
+    dsSwissKnife
 Suggests: 
     DBI,
     RPostgres
