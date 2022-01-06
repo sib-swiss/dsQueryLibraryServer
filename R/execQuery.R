@@ -11,7 +11,7 @@ myEnv <- parent.frame()
     }
   }
   realQname <- grep(qName, names(qList), value = TRUE)[1]
-
+  
   if(is.na(realQname)){
     stop(paste0('No such query name: ', qName, ' or domain: ', qDomain, '.'), call. = FALSE)
   }
