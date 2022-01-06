@@ -53,11 +53,9 @@ myEnv <- parent.frame()
   
   
   ret <- sapply(resource, function(x){
-    out <- resourcex::loadQuery(get(x, envir = myEnv), myQuery, params = qInput)
+    out <- resourcex::qLoad(get(x, envir = myEnv), myQuery, params = qInput)
    }, simplify = FALSE)
   
-  
-  #ret <- resourcex::loadQuery(get(resource, envir = parent.frame()), myQuery, params = qInput)
   
   
   if(typ == 'Aggregate'){
