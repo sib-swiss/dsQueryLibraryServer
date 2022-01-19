@@ -89,7 +89,7 @@ myEnv <- parent.frame()
     }, simplify = FALSE)
     # rbind them all if so asked:
     if(union){
-      assign(symbol, Reduce(rbind, ret), envir = .GlobalEnv)
+      assign(symbol, Reduce(function(x,y) rbind(x,y, stringsAsFactors = TRUE), ret), envir = .GlobalEnv)
     } else { # or not:
       sapply(names(ret), function(x){
         assign(paste0(symbol, '_', x), ret[[x]], envir = .GlobalEnv)
