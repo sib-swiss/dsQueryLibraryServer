@@ -90,13 +90,13 @@ myEnv <- parent.frame()
     # rbind them all if so asked:
     if(union){
       mydf <-  Reduce(rbind, ret)
-      if('database' %in% colnames(df)){
+      if('database' %in% colnames(mydf)){
         mydf$database <- factor(mydf$database)
       }
-      assign(symbol, mydf,envir = .GlobalEnv)
+      assign(symbol, mydf,envir = myEnv)
     } else { # or not:
       sapply(names(ret), function(x){
-        assign(paste0(symbol, '_', x), ret[[x]], envir = .GlobalEnv)
+        assign(paste0(symbol, '_', x), ret[[x]], envir = myEnv)
       })
     }
 
