@@ -102,7 +102,7 @@ myEnv <- parent.frame()
 
   
   } else { # only one db
-    assign(symbol, ret[[1]], envir = .GlobalEnv)
+    assign(symbol, ret[[1]], envir = myEnv)
   }
   return(TRUE)
 }
