@@ -78,21 +78,19 @@ myEnv <- parent.frame()
   #   assign(symbol, ret[[x]], envir = myEnv)
   # })
   
-  # if there's more than one, add a column with the resource name:
+  # add a column with the resource name:
   
-  if(length(names(ret)) > 1){
-    ret <- sapply(names(ret), function(x){
+#  if(length(names(ret)) > 1){
+  ret <- sapply(names(ret), function(x){
       if(NROW(ret[[x]]) > 0 ){
         ret[[x]]$database <- x
         ret[[x]]
       }
-    }, simplify = FALSE)
+  }, simplify = FALSE)
     # rbind them all if so asked:
-    if(union){
+  if(union){
       mydf <-  Reduce(rbind, ret)
-      if('database' %in% colnames(mydf)){
-        mydf$database <- factor(mydf$database)
-      }
+      mydf$database <- factor(mydf$database)
       assign(symbol, mydf,envir = myEnv)
     } else { # or not:
       sapply(names(ret), function(x){
@@ -101,9 +99,9 @@ myEnv <- parent.frame()
     }
 
   
-  } else { # only one db
-    assign(symbol, ret[[1]], envir = myEnv)
-  }
+#  } else { # only one db
+#    assign(symbol, ret[[1]], envir = myEnv)
+#  }
   return(TRUE)
 }
 
