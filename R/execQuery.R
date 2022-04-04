@@ -1,4 +1,4 @@
-execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, resource = NULL, union = TRUE){
+execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, rowOffset = NULL, resource = NULL, union = TRUE){
  
 myEnv <- parent.frame()  
  allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
@@ -50,7 +50,9 @@ myEnv <- parent.frame()
   if(!is.null(rowLimit) && typ == 'Assign'){
     myQuery <- paste0('select * from (', myQuery,  ') zyz limit ', rowLimit)
   }
-  
+  if(!is.null(rowOffset) && typ == 'Assign'){
+    myQuery <- paste0('select * from (', myQuery,  ') wvw offset ', rowOffset)
+  }
   
   ret <- sapply(resource, function(x){
     out <- resourcex::qLoad(get(x, envir = myEnv), myQuery, params = qInput)
