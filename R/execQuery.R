@@ -47,7 +47,9 @@ myEnv <- parent.frame()
     
     myQuery <- paste0('select * from (', myQuery,  ') xyx where ', rowFilter)
   }
-  
+  if(is.null(rowOffset)){
+    rowOffset <- 0
+  }
   myQuery <- paste0(myQuery, ' offset ', rowOffset)
   
   if(!is.null(rowLimit) && typ == 'Assign'){
