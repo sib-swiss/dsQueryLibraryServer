@@ -36,7 +36,8 @@ myEnv <- parent.frame()
 # must be set via option:
   myQuery <- gsub('@cdm', getOption('cdm_schema', default = 'public'), myQuery, fixed = TRUE)
   myQuery <- gsub('@vocab', getOption('vocabulary_schema', default = 'public'), myQuery, fixed = TRUE)
-  
+  # get rid of the semicolon at the and if any:
+  myQuery <- sub(';\\s*$','',myQuery)
   # add the filter and limit
   rowFilter <- dsSwissKnife:::.decode.arg(rowFilter)
   if(!is.null(rowFilter) && typ == 'Assign'){
