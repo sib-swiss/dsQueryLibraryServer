@@ -1,4 +1,4 @@
-# measurement
+# proteomics
 
 ## Description
 This query loads the proteomics table and transforms the json columns on the fly.

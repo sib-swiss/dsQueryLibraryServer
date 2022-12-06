@@ -1,4 +1,4 @@
-execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, rowOffset = 0, resource = NULL, union = TRUE){
+execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, rowOffset = 0, resource = NULL, union = TRUE, excludeColRegexes = NULL){
  
 myEnv <- parent.frame()  
  allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
@@ -36,6 +36,17 @@ myEnv <- parent.frame()
 # must be set via option:
   myQuery <- gsub('@cdm', getOption('cdm_schema', default = 'public'), myQuery, fixed = TRUE)
   myQuery <- gsub('@vocab', getOption('vocabulary_schema', default = 'public'), myQuery, fixed = TRUE)
+  #replace generic variables with options with the same name
+  #this would replace @~some.variable~@ with getOption('some.variable):
+  if (grepl('.*?@~(.*?)~@.*?', myQuery)){ ### variables apear like @~somevar~@
+    vars <-gsub('.*?@~(.*?)~@.*?', '\\1#', myQuery) # list their names separated by #
+    vars <- strsplit(vars, '#')[[1]] # make it a vector
+    # Replace the vars one by one with their values found in the environment as options:
+    myQuery <- Reduce(function(x,y){
+                        gsub(paste0('@~',y, '~@'), getOption(y, default = ''), x, fixed = TRUE)
+                      }, vars, init = myQuery)
+  }
+  #this would replace @~some.variable~@ with getOption('some.variable')
   # get rid of the semicolon at the and if any:
   myQuery <- sub(';\\s*$','',myQuery)
   # add the filter and limit
@@ -51,12 +62,16 @@ myEnv <- parent.frame()
   if(is.null(rowOffset)){
     rowOffset <- 0
   }
-  myQuery <- paste0(myQuery, ' offset ', rowOffset)
+ # myQuery <- paste0(myQuery, ' offset ', rowOffset)
+  if(typ == 'Assign'){
+    if(!is.null(rowOffset)){
+      myQuery <- paste0(myQuery, ' offset ', rowOffset)
+    } 
   
-  if(!is.null(rowLimit) && typ == 'Assign'){
-    myQuery <- paste0(myQuery, ' limit ', rowLimit)
+    if(!is.null(rowLimit)){
+       myQuery <- paste0(myQuery,  ' limit ', rowLimit)
+    }
   }
-
   
   ret <- sapply(resource, function(x){
     out <- resourcex::qLoad(get(x, envir = myEnv), myQuery, params = qInput)
@@ -71,22 +86,11 @@ myEnv <- parent.frame()
   if(is.null(symbol)){
     symbol <- realQname
   }
-#  sapply(names(ret), function(x){
-
-    # if there's more than one, add a column with the resource name:
-  #   if(length(names(ret)) > 1){
-  #     if(NROW(ret[[x]]) > 0 ){
-  #       ret[[x]]$database <- x
-  #     }
-  #     symbol <- paste0(symbol, '_', x)
-  #   }
-  #   # export it in the environment:
-  #   assign(symbol, ret[[x]], envir = myEnv)
-  # })
-  
-  # add a column with the resource name:
-  
-#  if(length(names(ret)) > 1){
+ if(!is.null(excludeColRegexes)){
+   ret <- sapply(ret, function(x){
+     x[, .trim_hidden_fields(colnames(x), excludeColRegexes),drop=FALSE]
+   }, simplify = FALSE)
+ }
   ret <- sapply(names(ret), function(x){
       if(NROW(ret[[x]]) > 0 ){
         ret[[x]]$database <- x
@@ -105,9 +109,7 @@ myEnv <- parent.frame()
     }
 
   
-#  } else { # only one db
-#    assign(symbol, ret[[1]], envir = myEnv)
-#  }
+
   return(TRUE)
 }
 
@@ -125,4 +127,13 @@ myEnv <- parent.frame()
   return(df)
 }
 
+# helper function to avoid loading useless columns:
+.trim_hidden_fields <- function(cols, regs){
+
+  
+  for (r in regs){
+    cols <- grep(r, cols, value = TRUE, perl = TRUE, invert = TRUE)
+  }
+  cols
+}
 
