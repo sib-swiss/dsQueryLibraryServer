@@ -1,7 +1,7 @@
-# measurement
+# measurement_limit
 
 ## Description
-This query loads the measurement table and adds a few useful columns (measurement name and type, measure unit) by joining it to the concept table.
+This query is similar to the "measurement" query but limits the output to a certain number of person_ids (using the offset and limit parameters).
 
 ## Query
 
@@ -13,5 +13,14 @@ INNER JOIN @vocab.concept as m_unit ON m.unit_concept_id = m_unit.concept_id
 LEFT JOIN @vocab.concept as m_typ ON m.measurement_type_concept_id = m_typ.concept_id
 LEFT JOIN @cdm.visit_occurrence as vo ON m.visit_occurrence_id = vo.visit_occurrence_id
 LEFT JOIN @vocab.concept as m_visit ON vo.visit_concept_id = m_visit.concept_id
+WHERE m.person_id IN
+	(SELECT person_id FROM (SELECT  person_id FROM  @cdm.person order by 1) a OFFSET COALESCE($1,0) LIMIT $2) 
 	
 ```
+
+## Input
+
+|  Parameter |  Example |  Mandatory |  Notes |
+| --- | --- | --- | --- |
+| offset| 100  | No | Skip this number of person_id s |
+| limit | 100  | Yes| Keek only this number of person_ids |
