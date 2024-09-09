@@ -6,7 +6,7 @@ This query loads the measurement table and adds a few useful columns (measuremen
 ## Query
 
 ```sql
-SELECT m_name.concept_name as measurement_name, m_typ.concept_name as measurement_type, m_unit.concept_name as unit, m_visit.concept_name as visit, m.*, vo.visit_source_value
+SELECT m_name.concept_name as measurement_name, m_typ.concept_name as measurement_type, m_unit.concept_name as unit, m_visit.concept_name as visit, vo.visit_source_value as visit_label,  m.*
 FROM @cdm.measurement AS m
 INNER JOIN @vocab.concept as m_name ON m.measurement_concept_id = m_name.concept_id
 INNER JOIN @vocab.concept as m_unit ON m.unit_concept_id = m_unit.concept_id
