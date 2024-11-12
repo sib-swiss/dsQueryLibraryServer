@@ -1,6 +1,8 @@
-execQuery <- function(qDomain, qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, rowOffset = 0, resource = NULL, union = TRUE, excludeColRegexes = NULL){
- 
-myEnv <- parent.frame()  
+execQuery <- function(qDomain , qName, qInput, symbol = NULL, rowFilter = NULL, rowLimit = NULL, rowOffset = 0, resource = NULL, union = TRUE, excludeColRegexes = NULL){
+ myEnv <- parent.frame()  
+
+  
+
  allq <- tryCatch(get('allQueries', envir = .queryLibrary), error = function(e){
                      loadAllQueries()
                   })
@@ -10,9 +12,14 @@ myEnv <- parent.frame()
       break
     }
   }
-  realQname <- grep(qName, names(qList), value = TRUE)[1]
+  realQnameCandidates <- grep(qName, names(qList), value = TRUE)
+  if(length(realQnameCandidates) > 1){ # if more than one look for the exact match
+    realQname <- grep(paste0('^', qName, '$'), realQnameCandidates, value = TRUE)[1] 
+  } else {
+    realQname <- realQnameCandidates[1]
+  }
   
-  if(is.na(realQname)){
+  if(is.null(realQname)){
     stop(paste0('No such query name: ', qName, ' or domain: ', qDomain, '.'), call. = FALSE)
   }
   myQuery <- paste(qList[[realQname]]$Query, collapse = ' ')
